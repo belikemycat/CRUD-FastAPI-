@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-# Базовая схема для представления данных о фильме
-
+#data validatioon 
 class UserCreate(BaseModel):
     username:str
     password:str
@@ -18,8 +17,7 @@ class MovieBase(BaseModel):
     genre: str
     director: str
     rating: Optional[float] = None
-
-# Схема для создания фильма (та же структура, что и у MovieBase)
+# to create movies, inherit from moviebase
 class MovieCreate(MovieBase):
     pass
 
