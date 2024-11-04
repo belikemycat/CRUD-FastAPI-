@@ -36,12 +36,11 @@ def get_users(db:Session = Depends(get_db)):
 
 @app.post("/movies/", response_model=schemas.Movie)
 def create_movie(movie: schemas.MovieCreate, db: Session = Depends(get_db)):
-    # Создаем экземпляр фильма из данных, полученных в запросе
     db_movie = models.Movie(**movie.dict())
-    db.add(db_movie)  # Добавляем фильм в сессию
-    db.commit()  # Фиксируем изменения в базе данных
-    db.refresh(db_movie)  # Обновляем объект db_movie после добавления
-    return db_movie  # Возвращаем добавленный фильм
+    db.add(db_movie)  # adding the movie to the session
+    db.commit()  # confirming changes
+    db.refresh(db_movie)  
+    return db_movie 
 
 @app.get("/movies/", response_model=list[schemas.Movie])
 def read_movies(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
@@ -75,14 +74,13 @@ def update_movie(movie_id: int, movie: schemas.MovieCreate, db: Session = Depend
     db_movie = db.query(models.Movie).filter(models.Movie.id == movie_id).first()
     if db_movie is None:
         raise HTTPException(status_code=404, detail="Movie not found")
-
-    # Обновляем поля объекта фильма
+        
     for key, value in movie.dict().items():
         setattr(db_movie, key, value)
 
-    db.commit()  # Сохраняем изменения
-    db.refresh(db_movie)  # Обновляем объект фильма
-    return db_movie  # Возвращаем обновленный фильм
+    db.commit()  
+    db.refresh(db_movie) 
+    return db_movie 
 
 
 @app.delete("/movies/{movie_id}")
